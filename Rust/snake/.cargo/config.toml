@@ -1,0 +1,11 @@
+# Simplify command execution
+[alias]
+udebug = "build --target riscv32i-unknown-none-elf"
+urelease = "build --release --target riscv32i-unknown-none-elf"
+uclean = "clean --target riscv32i-unknown-none-elf"
+
+# Use the linker script to compile
+[target.riscv32i-unknown-none-elf]
+rustflags = [
+    "-C", "link-arg=-Tuser.ld",
+]
