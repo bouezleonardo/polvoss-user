@@ -1,17 +1,32 @@
 #include <stdio.h>
 #include <stdlib.h>
+#include <unistd.h>
 
 int main() {
-  char name[] = "World";
-  int year = 2026;
+  printf("\nsbrk: %u", sbrk(0));
   
-  printf("\nHello, %s, this is %d!", name, year);
+  extern char euser;
+  printf("\nEnd addr: %u", &euser);
   
-  printf("\nType your age: ");
-  char buf[20];
-  gets(buf, 19);
+  int* ints = (int*)malloc(10*sizeof(int));
+  printf("\nAllocated %d. The ints is in %u", 10*sizeof(int), ints);
+  printf("\nNew sbrk: %u", sbrk(0));
   
-  printf("\n%%Your age is %x!", atoi(buf));
+  char* chars = (char*)malloc(21*sizeof(char));
+  printf("\nAllocated %d. The chars is in %u", 21*sizeof(char), chars);
+  printf("\nNew sbrk: %u", sbrk(0));
+  
+  printf("\nints = (");
+  for(int i = 0;i < 10;++i) {
+    printf("%d, ", ints+i);
+  }
+  printf(")");
+  
+  printf("\nchars = (");
+  for(int i = 0;i < 21;++i) {
+    printf("%d, ", chars+i);
+  }
+  printf(")");
   
   return 0;
 }

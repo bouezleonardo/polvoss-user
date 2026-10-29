@@ -45,6 +45,6 @@ SECTIONS
     . = ALIGN(16);
     *(.bss .bss.*)
   }
-
-  PROVIDE(end = .);
+  /* Save the end of user data */
+  PROVIDE(euser = .);
 }

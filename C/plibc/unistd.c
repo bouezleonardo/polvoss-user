@@ -174,3 +174,11 @@ void* sbrk(int increment){
   );
   return prev_break;
 }
+
+int brk(void *addr) {
+  // Increment the program break based on addr
+  if(sbrk(addr-sbrk(0)) == (void*)-1) {
+    return -1;
+  }
+  return 0;
+}

@@ -75,8 +75,13 @@ static int print_unsigned_int(int fd, unsigned int n, int base) {
   return bytes;
 }
 
-/** @brief Print a float in decimal base. */
-static int print_float(int fd, float n) {
+/** @brief Print a double in decimal base. */
+static int print_double(int fd, double n) {
+  // Print the integer part
+  print_int(fd, (int)n);
+  putc(fd, '.');
+  // Print the 6 first decimal points
+  print_int(fd, (int)((n - (int)n)*1000000));
   return 0;
 } 
 
@@ -86,8 +91,6 @@ static int _print(int fd, const char *format, va_list ap) {
   int len = strlen(format);
   // Last index where the write begun
   int last = 0;
-  // Character specifier that was found (follows %)
-  char specifier = '\0';
   // Number of characters written
   int bytes = 0;
   
@@ -100,7 +103,28 @@ static int _print(int fd, const char *format, va_list ap) {
       
       // Check if it is another %
       if(format[i+1] != '%') {
-        specifier = format[i+1];
+        switch(format[i+1]) {
+          case 'd':
+          case 'i':
+            bytes += print_int(fd, va_arg(ap, int));
+            break;
+          case 'u':
+            bytes += print_unsigned_int(fd, va_arg(ap, unsigned int), 10);
+            break;
+          case 'x':
+            bytes += print_unsigned_int(fd, va_arg(ap, unsigned int), 16);
+            break;
+          case 'f':
+            bytes += print_double(fd, va_arg(ap, double));
+            break;
+          case 'c':
+            bytes += putc(fd, va_arg(ap, int)); 
+            break;
+          case 's':
+            char *s = (char *)va_arg(ap, int);
+            bytes += write(fd, s, strlen(s));
+            break;
+        }
       } else {
         bytes += putc(fd, '%');
       }
@@ -108,30 +132,6 @@ static int _print(int fd, const char *format, va_list ap) {
       i += 2;
       last = i; 
     }
-    
-    switch(specifier) {
-      case 'd':
-      case 'i':
-        bytes += print_int(fd, va_arg(ap, int));
-        break;
-      case 'u':
-        bytes += print_unsigned_int(fd, va_arg(ap, unsigned int), 10);
-        break;
-      case 'x':
-        bytes += print_unsigned_int(fd, va_arg(ap, unsigned int), 16);
-        break;
-      case 'f':
-        bytes += print_float(fd, va_arg(ap, double));
-        break;
-      case 'c':
-        bytes += putc(fd, va_arg(ap, int)); 
-        break;
-      case 's':
-        char *s = (char *)va_arg(ap, int);
-        bytes += write(fd, s, strlen(s));
-        break;
-    }
-    specifier = '\0';
   }
   
   // Check if there is something to write

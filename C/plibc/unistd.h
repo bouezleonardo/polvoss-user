@@ -61,5 +61,6 @@ pid_t getpid();
 unsigned long int sleep(unsigned long int ticks);
 unsigned long int uptime();
 void* sbrk(int increment);
+int brk(void *addr);
 
 #endif

@@ -22,4 +22,22 @@
  */
 int atoi(const char *s);
 
+/**
+ * @brief Allocate a specified amount of memory. 
+ *
+ * @param size String to be converted.
+ *
+ * @return The pointer to the memory if successful, `NULL` otherwise.
+ */
+void* malloc(unsigned int size);
+
+/**
+ * @brief Deallocate memory specified by a pointer. 
+ *
+ * The pointer must come from `malloc` or other related function.
+ *
+ * @param p Pointer to the memory to be deallocated.
+ */
+void free(void* p);
+
 #endif
